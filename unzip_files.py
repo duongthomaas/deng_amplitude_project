@@ -59,12 +59,12 @@ for root, _, files in os.walk(day_path): # Tuple unpacking: root, _, files (unde
 # the location of where to store it (data_dir)
 # We will then read the contents of the .gz file and write the content to a new json file in our data_dir.
 
-gz_path = os.path.join(root, file)
-json_filename = file[:-3]  
-output_path = os.path.join(data_dir, json_filename)
+            gz_path = os.path.join(root, file)
+            json_filename = file[:-3]  
+            output_path = os.path.join(data_dir, json_filename)
 
-with gzip.open(gz_path, 'rb') as gz_file, open(output_path, 'wb') as out_file:            
-    shutil.copyfileobj(gz_file, out_file)
+            with gzip.open(gz_path, 'rb') as gz_file, open(output_path, 'wb') as out_file:            
+                shutil.copyfileobj(gz_file, out_file)
 
 # Notes:
 # String slicing: file[:-3] removes last 3 characters (.gz)
