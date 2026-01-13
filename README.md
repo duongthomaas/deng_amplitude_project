@@ -1,4 +1,4 @@
-# Amplitude Data Extraction & Processing
+# Amplitude Data Extraction & Load
 
 This project contains a pipeline of Python scripts designed to extract raw event data from the Amplitude API and process the compressed archives into clean, usable JSON files ready for cloud storage (AWS S3 & Snowflake).
 
@@ -35,6 +35,8 @@ Handles the "Russian Doll" compression structure of Amplitude exports (a `.zip` 
 # Data Staging & Loading
 
 The following steps outline the architecture used to move the processed data from the local environment into S3 Bucket and finally into Snowflake.
+
+<img width="1535" height="987" alt="image" src="https://github.com/user-attachments/assets/baa01247-18dd-4fc4-bbe4-d9740ad624e3" />
 
 ## 3. S3 Bucket
 
