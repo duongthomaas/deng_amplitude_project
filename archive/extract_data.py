@@ -6,11 +6,10 @@
 import requests 
 import os 
 from datetime import datetime
-import json
 import time  
 import logging 
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 ## Build the request
 

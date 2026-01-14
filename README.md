@@ -2,7 +2,7 @@
 
 This project contains a pipeline of Python scripts designed to extract raw event data from the Amplitude API and process the compressed archives into clean, usable JSON files ready for cloud storage (AWS S3 & Snowflake).
 
-## Scripts Overview
+## Extracting and Unzipping
 
 ### 1. Data Extractor (`extract_amplitude.py`)
 
@@ -24,15 +24,7 @@ Handles the "Russian Doll" compression structure of Amplitude exports (a `.zip` 
   5.  Cleans up temporary files.
 - **Output:** A `data/` folder containing raw JSON event logs.
 
-## 🛠️ Prerequisites
-
-- Python 3.x
-- No external libraries required for the unzip script (uses standard library `zipfile`, `gzip`, `shutil`, `os`).
-- `requests` library required for the extractor script.
-
----
-
-# Data Staging & Loading
+## Staging & Loading
 
 The following steps outline the architecture used to move the processed data from the local environment into S3 Bucket and finally into Snowflake.
 
@@ -82,3 +74,45 @@ Once the data is staged in S3, the following objects were created in Snowflake t
 4.  **Data Loading:**
     - **Target Table:** `amplitude_raw` (uses a `VARIANT` column to store raw JSON).
     - **Command:** `COPY INTO` is executed to move data from the External Stage into the Target Table.
+
+## 🚀 Pipeline Execution
+
+The entire pipeline has been modularised and is controlled by a single entry point: `main.py`.
+
+### Master Orchestrator (`main.py`)
+
+This script integrates all pipeline stages (Extraction, Processing, Loading) into a single flow.
+
+- **Function:**
+  1.  Calculates the date range (defaults to "Yesterday" for daily automation).
+  2.  Initialises logging.
+  3.  Triggers the **Extraction Module**.
+  4.  Triggers the **Unzip/Process Module**.
+  5.  Triggers the **Load Module** to upload to S3.
+
+## 🤖 Automation & Orchestration
+
+While main.py can be run locally, this pipeline is designed for automation.
+
+### Kestra Integration
+
+This Python workflow can be orchestrated using Kestra.
+
+`Trigger`: Schedule the main.py script to run daily (e.g., at 01:00 UTC) to fetch the previous day's data.
+
+`Workflow`: Kestra can manage the execution environment, handle retries on API failures, and trigger downstream DBT models in Snowflake once the Python load is complete.
+
+## 🛠️ Prerequisites
+
+- Python 3.x
+- No external libraries required for the unzip script (uses standard library `zipfile`, `gzip`, `shutil`, `os`).
+- `requests` library required for the extractor script.
+- **Environment Variables:**
+  You must create a `.env` file in the root directory containing the following keys (matching the `main.py` configuration):
+  ```ini
+  AMP_API_KEY=your_amplitude_api_key
+  AMP_SECRET_KEY=your_amplitude_secret_key
+  AWS_ACCESS_KEY=your_aws_access_key
+  AWS_SECRET_KEY=your_aws_secret_key
+  bucket_name=your_s3_bucket_name
+  ```
