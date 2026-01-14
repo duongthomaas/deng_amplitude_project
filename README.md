@@ -24,13 +24,13 @@ Handles the "Russian Doll" compression structure of Amplitude exports (a `.zip` 
   5.  Cleans up temporary files.
 - **Output:** A `data/` folder containing raw JSON event logs.
 
-## Staging & Loading
+### Staging & Loading
 
 The following steps outline the architecture used to move the processed data from the local environment into S3 Bucket and finally into Snowflake.
 
 <img width="1535" height="987" alt="image" src="https://github.com/user-attachments/assets/baa01247-18dd-4fc4-bbe4-d9740ad624e3" />
 
-## 3. S3 Bucket
+### 3. S3 Bucket
 
 To stage the data securely, an S3 bucket was configured with security measures.
 
@@ -41,7 +41,7 @@ To stage the data securely, an S3 bucket was configured with security measures.
   - **Encryption:** Server-side encryption enabled using a custom **AWS KMS Key**.
   - **Ownership:** ACLs disabled; bucket owner enforced.
 
-## 4. Connectivity & Access Control (IAM)
+### 4. Connectivity & Access Control (IAM)
 
 Two distinct security methods were used to connect to the S3 bucket, ensuring the principle of least privilege.
 
@@ -64,7 +64,7 @@ This connection allows Snowflake to ingest data without exchanging access keys.
   2.  The AWS IAM Role is configured with a **Trust Policy** that only allows the specific Snowflake user (referenced by ARN) to assume the role if the External ID matches.
 - **Permissions:** The Role has an attached policy allowing `s3:GetObject` and `s3:ListBucket`.
 
-## 5. Snowflake
+### 5. Snowflake
 
 Once the data is staged in S3, the following objects were created in Snowflake to finalise the load.
 
